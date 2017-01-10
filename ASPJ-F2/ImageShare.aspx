@@ -12,7 +12,7 @@
             <div class="col-lg-12">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h1>Files - How to prepare Your Design
+                        <h1>Files - How to prepare Your Design!!
                         </h1>
                     </div>
                     <div class="panel-body">
