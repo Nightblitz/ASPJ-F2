@@ -112,13 +112,13 @@ namespace ASPJ_F2 {
         protected global::System.Web.UI.WebControls.Button DeleteBtnMain;
         
         /// <summary>
-        /// Repeater1 control.
+        /// MainUploadedImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater Repeater1;
+        protected global::System.Web.UI.WebControls.Image MainUploadedImage;
         
         /// <summary>
         /// StatusLabelMain control.
@@ -130,49 +130,13 @@ namespace ASPJ_F2 {
         protected global::System.Web.UI.WebControls.Label StatusLabelMain;
         
         /// <summary>
-        /// FileUploadSec control.
+        /// SecondaryUploadedImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload FileUploadSec;
-        
-        /// <summary>
-        /// PreviewBtnSec control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button PreviewBtnSec;
-        
-        /// <summary>
-        /// DeleteBtnSec control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button DeleteBtnSec;
-        
-        /// <summary>
-        /// rptrUserPhotos control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptrUserPhotos;
-        
-        /// <summary>
-        /// StatusLabelSec control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label StatusLabelSec;
+        protected global::System.Web.UI.WebControls.Image SecondaryUploadedImage;
         
         /// <summary>
         /// ShareBtn control.

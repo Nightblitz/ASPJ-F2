@@ -2,11 +2,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <script src="http://slideshow.triptracker.net/slide.js" type="text/javascript"></script>
-    <style type="text/css">
-        .saucer:hover {
-            background-color: silver;
-        }
-    </style>
     <div class="container">
         <div class="panel-body">
             <div class="col-lg-12">
@@ -74,37 +69,26 @@
                                 <asp:Button ID="PreviewBtnMain" Style="margin: 5px;" class="btn btn-success" runat="server" OnClick="btnPreviewMain_Click" Text="Preview" />
                                 <asp:Button ID="DeleteBtnMain" Style="margin: 5px;" class="btn btn-danger" Text="Delete" runat="server" OnClick="btnDeleteMain_Click" />
                                 <div class="form-group">
-                                     <br />
-                                    <asp:Repeater ID="Repeater1" runat="server">
-                                        <ItemTemplate>
-                                            <span class="saucer">
-                                                <asp:ImageButton OnCommand="imgUserPhoto_Command" CommandArgument="<%# Container.DataItem %>" ImageUrl="<%# Container.DataItem %>" ID="imgUserPhoto" Style="width: 100px; height: 100px;" runat="server" alt="" />
-                                            </span>
-                                        </ItemTemplate>
-                                    </asp:Repeater>
+                                    <asp:Image ID="MainUploadedImage" BorderColor="Black" BorderStyle="Solid" runat="server" />
                                 </div>
                                 <div class="row">
                                     <asp:Label ID="StatusLabelMain" Style="font-size: medium" runat="server"></asp:Label>
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <label for="inputSecondaryFiles">Display Files</label>
-                                <asp:FileUpload ID="FileUploadSec" runat="server" />
-                                <asp:Button ID="PreviewBtnSec" Style="margin: 5px;" class="btn btn-success" runat="server" OnClick="btnPreviewSecondary_Click" Text="Preview" />
-                                <asp:Button ID="DeleteBtnSec" Style="margin: 5px;" class="btn btn-danger" Text="Delete" runat="server" OnClick="btnDeleteSecondary_Click" />
-                                <div class="form-group">
-                                    <br />
-                                    <asp:Repeater ID="rptrUserPhotos" runat="server">
-                                        <ItemTemplate>
-                                            <span class="saucer">
-                                                <asp:ImageButton OnCommand="imgUserPhoto_Command" CommandArgument="<%# Container.DataItem %>" ImageUrl="<%# Container.DataItem %>" ID="imgUserPhoto" Style="width: 100px; height: 100px;" runat="server" alt="" />
-                                                <asp:CheckBox ID="cbDelete" special="<%# Container.DataItem %>" ImageUrl="<%# Container.DataItem %>" Text="Delete" runat="server" />
-                                            </span>
-                                        </ItemTemplate>
-                                    </asp:Repeater>
-                                </div>
-                                <div class="row">
-                                    <asp:Label ID="StatusLabelSec" Style="font-size: medium" runat="server"></asp:Label>
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Display Images
+                                        </h3>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <label for="XtraStuff">**Images here will be displayed for customers</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <asp:Image ID="SecondaryUploadedImage" BorderColor="Black" BorderStyle="Solid" runat="server" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

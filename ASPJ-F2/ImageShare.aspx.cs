@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 
 namespace ASPJ_F2
 {
@@ -22,6 +21,7 @@ namespace ASPJ_F2
 
         //Important Stuff - Gallery
         private int galleryID = 0;
+
         private string title;
         private int categoryID;
         private string categoryName;
@@ -29,12 +29,15 @@ namespace ASPJ_F2
 
         //Main upload var
         private string extensionMain;
-        private string fromRootToPhotosMain = @"C:\Users\User\Documents\Visual Studio 2015\Projects\ASPJ-F2\ASPJ-F2\Images\UploadedPhotos\Main\";
+
+        private string fromRootToPhotosMain = @"C:\Users\User\Source\Repos\NewRepo\ASPJ-F2\Images\UploadedPhotos\Main\";
         private string photoFolderMain;
         private string randomPicIDMain;
+        private string targetPath;
 
         //Secondary upload var
         private string randomPicIDSec;
+
         private List<string> PathList = new List<string>();
         private string photoFolderSec;
         private string extensionSec;
@@ -112,7 +115,7 @@ namespace ASPJ_F2
             }
             this.DesignTitleLabel.Text = title;
             this.CategoryLabel.Text = categoryName;
-            this.CostLabel.Text = "$"+amount.ToString();
+            this.CostLabel.Text = "$" + amount.ToString();
             this.SellerLabel.Text = userid;
         }
 
@@ -138,24 +141,27 @@ namespace ASPJ_F2
                             string uniqueFileNameMain = Path.ChangeExtension(FileUploadMain.FileName, DateTime.Now.Ticks.ToString());
 
                             //Editing of main image
-                            Stream strm = FileUploadMain.PostedFile.InputStream;
-                            string targetPath;
-                            using (var img = System.Drawing.Image.FromStream(strm))
-                            {
-                                int newWidth = 240;
-                                int newHeight = 240;
-                                var thumbImg = new Bitmap(newWidth, newHeight);
-                                var thumbGraph = Graphics.FromImage(thumbImg);
-                                thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
-                                thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                                thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
-                                var imgRectangle = new Rectangle(0, 0, newWidth, newHeight);
-                                thumbGraph.DrawImage(img, imgRectangle);
-                                //Save the file
-                                targetPath = photoFolderMain +randomPicIDMain + "\\"+ uniqueFileNameMain;
-                                thumbImg.Save(targetPath, ImageFormat.Png);
-                            }
-                                //FileUploadMain.SaveAs(Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain));
+                            //Stream strm = FileUploadMain.PostedFile.InputStream;
+                            //string targetPath;
+                            //using (var img = System.Drawing.Image.FromStream(strm))
+                            //{
+                            //    int newWidth = 240;
+                            //    int newHeight = 240;
+                            //    var thumbImg = new Bitmap(newWidth, newHeight);
+                            //    var thumbGraph = Graphics.FromImage(thumbImg);
+                            //    thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+                            //    thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            //    thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+                            //    var imgRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                            //    thumbGraph.DrawImage(img, imgRectangle);
+
+                            //    targetPath = photoFolderMain + randomPicIDMain + "\\" + uniqueFileNameMain;
+                            //    using (Bitmap bmp = new Bitmap(thumbImg))
+                            //    {
+                            //        bmp.Save(targetPath ,bmp.RawFormat);
+                            //    }
+                            //}
+                            FileUploadMain.SaveAs(Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain));
                             var clam = new ClamClient("localhost", 3310);
                             var scanResult = clam.ScanFileOnServer(Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain));
 
@@ -164,7 +170,8 @@ namespace ASPJ_F2
                                 case ClamScanResults.Clean:
                                     StatusLabelMain.CssClass = "label label-success";
                                     StatusLabelMain.Text = "Upload status: File uploaded!";
-                                    DisplayMainUploadedPhotos(uniqueFileNameMain);
+                                    DisplayMainUploadedPhotos();
+                                    DisplaySecondaryUploadedPhotos();
 
                                     break;
 
@@ -204,104 +211,152 @@ namespace ASPJ_F2
                 StatusLabelMain.CssClass = "label label-danger";
             }
         }
-        public void DisplayMainUploadedPhotos(string fileName)
+
+        public void DisplayMainUploadedPhotos()
         {
-            string PhotoPaths = "Images/UploadedPhotos/Main/" + randomPicIDMain + "/" + fileName;
-            rptrUserPhotos.DataSource = PhotoPaths;
-            rptrUserPhotos.DataBind();
+            Stream fs = FileUploadMain.PostedFile.InputStream;
+            BinaryReader br = new BinaryReader(fs);
+            Byte[] bytes = br.ReadBytes((Int32)fs.Length);
+            string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
+            MainUploadedImage.ImageUrl = "data:image/png;base64," + base64String;
+            MainUploadedImage.Visible = true;
+            MainUploadedImage.Width = 150;
+            MainUploadedImage.Height = 150;
         }
+
+        public void DisplaySecondaryUploadedPhotos()
+        {
+            string watermarkText = "© F2-ASPJ";
+
+            //Get the file name.
+            string fileName = Path.GetFileNameWithoutExtension(FileUploadMain.PostedFile.FileName) + ".png";
+
+            //Read the File into a Bitmap.
+            using (Bitmap bmp = new Bitmap(FileUploadMain.PostedFile.InputStream, false))
+            {
+                using (Graphics grp = Graphics.FromImage(bmp))
+                {
+                    //Set the Color of the Watermark text.
+                    Brush brush = new SolidBrush(Color.Red);
+
+                    //Set the Font and its size.
+                    Font font = new System.Drawing.Font("Arial", 30, FontStyle.Bold, GraphicsUnit.Pixel);
+
+                    //Determine the size of the Watermark text.
+                    SizeF textSize = new SizeF();
+                    textSize = grp.MeasureString(watermarkText, font);
+
+                    //Position the text and draw it on the image.
+                    Point position = new Point((bmp.Width - ((int)textSize.Width + 10)), (bmp.Height - ((int)textSize.Height + 10)));
+                    grp.DrawString(watermarkText, font, brush, position);
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        //Save the Watermarked image to the MemoryStream.
+                        bmp.Save(memoryStream, ImageFormat.Png);
+                        Byte[] bytes = memoryStream.ToArray();
+                        string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
+                        SecondaryUploadedImage.ImageUrl = "data:image/png;base64," + base64String;
+                        SecondaryUploadedImage.Visible = true;
+                        SecondaryUploadedImage.Width = 150;
+                        SecondaryUploadedImage.Height = 150;
+                    }
+                }
+            }
+        }
+       
+
         protected void btnDeleteMain_Click(object sender, EventArgs e)
         {
         }
 
-        protected void btnPreviewSecondary_Click(object sender, EventArgs e)
-        {
-            extensionSec = Path.GetExtension(FileUploadSec.FileName);
-            if (FileUploadSec.HasFile)
-            {
-                try
-                {
-                    if (FileUploadSec.PostedFile.ContentType == "image/png" || FileUploadSec.PostedFile.ContentType == "text/plain")
-                    {
-                        if (FileUploadSec.PostedFile.ContentLength < 1000000)
-                        {
-                            photoFolderSec = Path.Combine(fromRootToPhotosSecondary, randomPicIDSec);
-                            ViewState["StoredIdSec"] = randomPicIDSec;
-                            if (!Directory.Exists(photoFolderSec))
-                            {
-                                Directory.CreateDirectory(photoFolderSec);
-                            }
-                            ViewState["PhotoFolderSec"] = photoFolderSec;
-                            string extensionSec = Path.GetExtension(FileUploadSec.FileName);
-                            string uniqueFileNameSec = Path.ChangeExtension(FileUploadSec.FileName, DateTime.Now.Ticks.ToString());
-                            FileUploadSec.SaveAs(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-                            var clam = new ClamClient("localhost", 3310);
-                            var scanResult = clam.ScanFileOnServer(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
+        //protected void btnPreviewSecondary_Click(object sender, EventArgs e)
+        //{
+        //    extensionSec = Path.GetExtension(FileUploadSec.FileName);
+        //    if (FileUploadSec.HasFile)
+        //    {
+        //        try
+        //        {
+        //            if (FileUploadSec.PostedFile.ContentType == "image/png" || FileUploadSec.PostedFile.ContentType == "text/plain")
+        //            {
+        //                if (FileUploadSec.PostedFile.ContentLength < 1000000)
+        //                {
+        //                    photoFolderSec = Path.Combine(fromRootToPhotosSecondary, randomPicIDSec);
+        //                    ViewState["StoredIdSec"] = randomPicIDSec;
+        //                    if (!Directory.Exists(photoFolderSec))
+        //                    {
+        //                        Directory.CreateDirectory(photoFolderSec);
+        //                    }
+        //                    ViewState["PhotoFolderSec"] = photoFolderSec;
+        //                    string extensionSec = Path.GetExtension(FileUploadSec.FileName);
+        //                    string uniqueFileNameSec = Path.ChangeExtension(FileUploadSec.FileName, DateTime.Now.Ticks.ToString());
+        //                    FileUploadSec.SaveAs(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
+        //                    var clam = new ClamClient("localhost", 3310);
+        //                    var scanResult = clam.ScanFileOnServer(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
 
-                            switch (scanResult.Result)
-                            {
-                                case ClamScanResults.Clean:
-                                    StatusLabelSec.CssClass = "label label-success";
-                                    StatusLabelSec.Text = "Upload status: File uploaded!";
+        //                    switch (scanResult.Result)
+        //                    {
+        //                        case ClamScanResults.Clean:
+        //                            StatusLabelSec.CssClass = "label label-success";
+        //                            StatusLabelSec.Text = "Upload status: File uploaded!";
 
-                                    DisplayUploadedPhotos(photoFolderSec);
-                                    break;
+        //                            DisplayUploadedPhotos(photoFolderSec);
+        //                            break;
 
-                                case ClamScanResults.VirusDetected:
-                                    StatusLabelSec.Text = "Upload status: Virus Found!!!!!";
-                                    File.Delete(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-                                    StatusLabelSec.CssClass = "label label-danger";
-                                    break;
+        //                        case ClamScanResults.VirusDetected:
+        //                            StatusLabelSec.Text = "Upload status: Virus Found!!!!!";
+        //                            File.Delete(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
+        //                            StatusLabelSec.CssClass = "label label-danger";
+        //                            break;
 
-                                case ClamScanResults.Error:
-                                    StatusLabelSec.Text = scanResult.RawResult;
-                                    File.Delete(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-                                    StatusLabelSec.CssClass = "label label-danger";
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            StatusLabelSec.Text = "Upload status: The file has to be less than 1 MB!";
-                            StatusLabelSec.CssClass = "label label-danger";
-                        }
-                    }
-                    else
-                    {
-                        StatusLabelSec.Text = "Upload status: Only PNG Or BMP files are accepted!";
-                        StatusLabelSec.CssClass = "label label-danger";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    StatusLabelSec.Text = "Upload status: The file could not be uploaded. The following error occured: " + ex.Message;
-                }
-            }
-            else
-            {
-                StatusLabelSec.Text = "Upload status: You have not chosen a picture to preview!!";
-                StatusLabelSec.CssClass = "label label-danger";
-            }
-        }
+        //                        case ClamScanResults.Error:
+        //                            StatusLabelSec.Text = scanResult.RawResult;
+        //                            File.Delete(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
+        //                            StatusLabelSec.CssClass = "label label-danger";
+        //                            break;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    StatusLabelSec.Text = "Upload status: The file has to be less than 1 MB!";
+        //                    StatusLabelSec.CssClass = "label label-danger";
+        //                }
+        //            }
+        //            else
+        //            {
+        //                StatusLabelSec.Text = "Upload status: Only PNG Or BMP files are accepted!";
+        //                StatusLabelSec.CssClass = "label label-danger";
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            StatusLabelSec.Text = "Upload status: The file could not be uploaded. The following error occured: " + ex.Message;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        StatusLabelSec.Text = "Upload status: You have not chosen a picture to preview!!";
+        //        StatusLabelSec.CssClass = "label label-danger";
+        //    }
+        //}
 
+        //public void DisplayUploadedPhotos(string folder)
+        //{
+        //    string[] allPhotoFiles = Directory.GetFiles(folder);
+        //    IList<string> allPhotoPaths = new List<string>();
 
-        public void DisplayUploadedPhotos(string folder)
-        {
-            string[] allPhotoFiles = Directory.GetFiles(folder);
-            IList<string> allPhotoPaths = new List<string>();
+        //    string fileName;
 
-            string fileName;
-
-            foreach (string f in allPhotoFiles)
-            {
-                fileName = Path.GetFileName(f);
-                allPhotoPaths.Add("images/UploadedPhotos/Secondary/" + randomPicIDSec + "/" + fileName);
-                PathList.Add("images/UploadedPhotos/Secondary/" + randomPicIDSec + "/" + fileName);
-                ViewState["PathList"] = PathList;
-            }
-            rptrUserPhotos.DataSource = allPhotoPaths;
-            rptrUserPhotos.DataBind();
-        }
+        //    foreach (string f in allPhotoFiles)
+        //    {
+        //        fileName = Path.GetFileName(f);
+        //        allPhotoPaths.Add("images/UploadedPhotos/Secondary/" + randomPicIDSec + "/" + fileName);
+        //        PathList.Add("images/UploadedPhotos/Secondary/" + randomPicIDSec + "/" + fileName);
+        //        ViewState["PathList"] = PathList;
+        //    }
+        //    rptrUserPhotos.DataSource = allPhotoPaths;
+        //    rptrUserPhotos.DataBind();
+        //}
 
         protected void imgUserPhoto_Command(object sender, CommandEventArgs e)
         {
@@ -317,23 +372,23 @@ namespace ASPJ_F2
             ClientScript.RegisterStartupScript(GetType(), "viewer", script.ToString());
         }
 
-        protected void btnDeleteSecondary_Click(object sender, EventArgs e)
-        {
-            {
-                foreach (RepeaterItem ri in rptrUserPhotos.Items)
-                {
-                    CheckBox cb = ri.FindControl("cbDelete") as CheckBox;
-                    if (cb.Checked)
-                    {
-                        string fromPhotosToExtension = cb.Attributes["special"];
-                        string fromRootToHome = @"C:\Users\User\Documents\Visual Studio 2015\Projects\ASPJ-F2\ASPJ-F2\Images\UploadedPhotos\Secondary\S";
-                        string fileToDelete = Path.Combine(Directory.GetParent(fromRootToHome).ToString(), fromPhotosToExtension);
-                        File.Delete(fileToDelete);
-                    }
-                }
-                DisplayUploadedPhotos(Path.Combine(fromRootToPhotosSecondary, randomPicIDSec));
-            }
-        }
+        //protected void btnDeleteSecondary_Click(object sender, EventArgs e)
+        //{
+        //    {
+        //        foreach (RepeaterItem ri in rptrUserPhotos.Items)
+        //        {
+        //            CheckBox cb = ri.FindControl("cbDelete") as CheckBox;
+        //            if (cb.Checked)
+        //            {
+        //                string fromPhotosToExtension = cb.Attributes["special"];
+        //                string fromRootToHome = @"C:\Users\User\Documents\Visual Studio 2015\Projects\ASPJ-F2\ASPJ-F2\Images\UploadedPhotos\Secondary\S";
+        //                string fileToDelete = Path.Combine(Directory.GetParent(fromRootToHome).ToString(), fromPhotosToExtension);
+        //                File.Delete(fileToDelete);
+        //            }
+        //        }
+        //        DisplayUploadedPhotos(Path.Combine(fromRootToPhotosSecondary, randomPicIDSec));
+        //    }
+        //}
 
         protected void ShareBtn_Click(object sender, EventArgs e)
         {
