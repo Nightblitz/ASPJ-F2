@@ -16,7 +16,7 @@
                                 <h2>Things to remember:</h2>
                                 <ul>
                                     <li>We accept only .PNG files only</li>
-                                    <li>10 is the maximum number of files</li>
+                                    <li>Only 1 file is allowed to be uploaded</li>
                                     <li>100MB is the maximum total file size</li>
                                 </ul>
                             </div>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <div class="panel panel-info">
+                                <div class="panel panel-danger">
                                     <div class="panel-heading">
                                         <h3 class="panel-title">Display Images
                                         </h3>
@@ -90,20 +90,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <asp:Button ID="ShareBtn" class="btn btn-warning" runat="server" Text="Share" OnClick="ShareBtn_Click" />
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-lg-2">
-                            <asp:Button ID="ShareBtn" class="btn btn-warning" runat="server" Text="Share" OnClick="ShareBtn_Click" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <%--<fieldset>
+        <%--<fieldset>
         <legend>Share/Sell Your Designs</legend>
         <div class="form-group">
             <label for="inputTitle">Design Title</label>

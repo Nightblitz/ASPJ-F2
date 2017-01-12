@@ -1,25 +1,33 @@
 ﻿using nClam;
 using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
-using System.Web.UI.WebControls;
 
 namespace ASPJ_F2
 {
     public partial class ImageShare : System.Web.UI.Page
     {
         private static byte[] _salt = Encoding.ASCII.GetBytes("jasdh7834y8hfeur73rsharks214");
-        private string encrytedBytetext;
-        private byte[] encrytedImages;
-        private string secretEncryptionKey;
-        private int counter = 0;
 
-        //Important Stuff - Gallery
+        //Watemarking Image Var [Main]
+        private string secretTextMain;
+
+        private string secretTextKeyMain;
+        private string encrytedSecretTextMain;
+
+        //Watermarking Image var[Sec]
+        private string secretTextSec;
+
+        private string secretTextKeySec;
+        private string encrytedSecretTextSec;
+
+        //Important Stuff - Gallery var Database
         private int galleryID = 0;
 
         private string title;
@@ -33,15 +41,28 @@ namespace ASPJ_F2
         private string fromRootToPhotosMain = @"C:\Users\User\Source\Repos\NewRepo\ASPJ-F2\Images\UploadedPhotos\Main\";
         private string photoFolderMain;
         private string randomPicIDMain;
-        private string targetPath;
+        private string uniqueFileNameMain;
 
         //Secondary upload var
-        private string randomPicIDSec;
-
-        private List<string> PathList = new List<string>();
-        private string photoFolderSec;
         private string extensionSec;
-        private string fromRootToPhotosSecondary = @"C:\Users\User\Documents\Visual Studio 2015\Projects\ASPJ-F2\ASPJ-F2\Images\UploadedPhotos\Secondary\";
+
+        private string fromRootToPhotosSec = @"C:\Users\User\Source\Repos\NewRepo\ASPJ-F2\Images\UploadedPhotos\Secondary\";
+        private string photoFolderSec;
+        private string randomPicIDSec;
+        private string uniqueFileNameSec;
+
+        //FileuploadMain database var
+        private string filesizeMain;
+
+        private string medianameMain;
+        private int fileUploadSecretID;
+        private int fileUploadID;
+
+        //FileuploadSec database var
+        private string filesizeSec;
+
+        private int fileUploadSecondarySecretID;
+        private int fileUploadSecondaryID;
 
         //Temp
         private string userid = "123";
@@ -52,14 +73,14 @@ namespace ASPJ_F2
             galleryID = Int32.Parse(idFromPrevious);
 
             //SecretText Generate
-            if (ViewState["StoredText"] == null)
-            {
-                secretEncryptionKey = Cryptography.GetRandomString();
-            }
-            else
-            {
-                secretEncryptionKey = (string)ViewState["StoredText"];
-            }
+            //if (ViewState["StoredText"] == null)
+            //{
+            //    secretEncryptionKey = Cryptography.GetRandomString();
+            //}
+            //else
+            //{
+            //    secretEncryptionKey = (string)ViewState["StoredText"];
+            //}
             //Encrypt of secret text in image of Main
             if (ViewState["StoredIdMain"] == null)
             {
@@ -69,7 +90,7 @@ namespace ASPJ_F2
             {
                 randomPicIDMain = (string)ViewState["StoredIdMain"];
             }
-            //Encrypt of secret text in image of Secondary
+            //Encrypt of secret text in image of Sec
             if (ViewState["StoredIdSec"] == null)
             {
                 randomPicIDSec = Cryptography.GetRandomString();
@@ -121,7 +142,16 @@ namespace ASPJ_F2
 
         protected void btnPreviewMain_Click(object sender, EventArgs e)
         {
+            //Storage of database essentials
+            ViewState["filesizeMain"] = FileUploadMain.PostedFile.ContentLength.ToString();
+            ViewState["medianameMain"] = FileUploadMain.PostedFile.FileName;
+            //filesizeMain = FileUploadMain.PostedFile.ContentLength.ToString();
+            //medianameMain = FileUploadMain.PostedFile.FileName;
+
             extensionMain = Path.GetExtension(FileUploadMain.FileName);
+            extensionSec = Path.GetExtension(FileUploadMain.FileName);
+            ViewState["extensionMain"] = extensionMain;
+            ViewState["extensionSec"] = extensionSec;
             if (FileUploadMain.HasFile)
             {
                 try
@@ -132,13 +162,23 @@ namespace ASPJ_F2
                         {
                             photoFolderMain = Path.Combine(fromRootToPhotosMain, randomPicIDMain);
                             ViewState["StoredIdMain"] = randomPicIDMain;
+
+                            photoFolderSec = Path.Combine(fromRootToPhotosSec, randomPicIDSec);
+                            ViewState["StoredIdSec"] = randomPicIDSec;
+                            //Main Create Dir
                             if (!Directory.Exists(photoFolderMain))
                             {
                                 Directory.CreateDirectory(photoFolderMain);
                             }
+                            //Sec Create Dir
+                            if (!Directory.Exists(photoFolderSec))
+                            {
+                                Directory.CreateDirectory(photoFolderSec);
+                            }
                             ViewState["PhotoFolderMain"] = photoFolderMain;
-                            string extensionMain = Path.GetExtension(FileUploadMain.FileName);
-                            string uniqueFileNameMain = Path.ChangeExtension(FileUploadMain.FileName, DateTime.Now.Ticks.ToString());
+                            ViewState["PhotoFolderSec"] = photoFolderSec;
+                            uniqueFileNameMain = Path.ChangeExtension(FileUploadMain.FileName, DateTime.Now.Ticks.ToString());
+                            ViewState["uniqueFileNameMain"] = uniqueFileNameMain;
 
                             //Editing of main image
                             //Stream strm = FileUploadMain.PostedFile.InputStream;
@@ -161,7 +201,19 @@ namespace ASPJ_F2
                             //        bmp.Save(targetPath ,bmp.RawFormat);
                             //    }
                             //}
-                            FileUploadMain.SaveAs(Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain));
+
+                            //Embedding secretText into ImageMain
+                            Stream strm = FileUploadMain.PostedFile.InputStream;
+                            Bitmap WatermarkedImageMain = (Bitmap)Image.FromStream(strm);
+                            secretTextMain = Cryptography.GetRandomString();
+                            secretTextKeyMain = Cryptography.GetRandomString();
+                            encrytedSecretTextMain = EncryptStringAesIntoImage(secretTextMain, secretTextKeyMain);
+                            WatermarkedImageMain = Cryptography.embedText(encrytedSecretTextMain, WatermarkedImageMain);
+                            WatermarkedImageMain.Save(Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain));
+
+                            ViewState["secretTextKeyMain"] = secretTextKeyMain;
+                            ViewState["encrytedSecretTextMain"] = encrytedSecretTextMain;
+
                             var clam = new ClamClient("localhost", 3310);
                             var scanResult = clam.ScanFileOnServer(Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain));
 
@@ -170,7 +222,7 @@ namespace ASPJ_F2
                                 case ClamScanResults.Clean:
                                     StatusLabelMain.CssClass = "label label-success";
                                     StatusLabelMain.Text = "Upload status: File uploaded!";
-                                    DisplayMainUploadedPhotos();
+                                    DisplayMainUploadedPhotos(imageToByteArray(WatermarkedImageMain));
                                     DisplaySecondaryUploadedPhotos();
 
                                     break;
@@ -212,16 +264,23 @@ namespace ASPJ_F2
             }
         }
 
-        public void DisplayMainUploadedPhotos()
+        public void DisplayMainUploadedPhotos(byte[] img)
         {
-            Stream fs = FileUploadMain.PostedFile.InputStream;
-            BinaryReader br = new BinaryReader(fs);
-            Byte[] bytes = br.ReadBytes((Int32)fs.Length);
+            //Stream fs = FileUploadMain.PostedFile.InputStream;
+            //BinaryReader br = new BinaryReader(fs);
+            Byte[] bytes = img;
             string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
             MainUploadedImage.ImageUrl = "data:image/png;base64," + base64String;
             MainUploadedImage.Visible = true;
             MainUploadedImage.Width = 150;
             MainUploadedImage.Height = 150;
+        }
+
+        public byte[] imageToByteArray(System.Drawing.Image imageIn)
+        {
+            MemoryStream ms = new MemoryStream();
+            imageIn.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            return ms.ToArray();
         }
 
         public void DisplaySecondaryUploadedPhotos()
@@ -250,148 +309,274 @@ namespace ASPJ_F2
                     Point position = new Point((bmp.Width - ((int)textSize.Width + 10)), (bmp.Height - ((int)textSize.Height + 10)));
                     grp.DrawString(watermarkText, font, brush, position);
 
+                    //Embedding secretText into ImageMain
+
+                    Bitmap WatermarkedImageSec = bmp;
+                    secretTextSec = Cryptography.GetRandomString();
+                    secretTextKeySec = Cryptography.GetRandomString();
+                    encrytedSecretTextSec = EncryptStringAesIntoImage(secretTextSec, secretTextKeySec);
+                    WatermarkedImageSec = Cryptography.embedText(encrytedSecretTextSec, WatermarkedImageSec);
+
+                    ViewState["secretTextKeySec"] = secretTextKeySec;
+                    ViewState["encrytedSecretTextSec"] = encrytedSecretTextSec;
+
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
                         //Save the Watermarked image to the MemoryStream.
-                        bmp.Save(memoryStream, ImageFormat.Png);
+                        WatermarkedImageSec.Save(memoryStream, ImageFormat.Png);
+                        //Save image
+                        uniqueFileNameSec = Path.ChangeExtension(FileUploadMain.FileName, DateTime.Now.Ticks.ToString());
+                        ViewState["uniqueFileNameSec"] = uniqueFileNameSec;
+                        string SecTargetPath = Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec);
+                        WatermarkedImageSec.Save(SecTargetPath, WatermarkedImageSec.RawFormat);
+
+                        //Displaying of image
                         Byte[] bytes = memoryStream.ToArray();
+                        ViewState["filesizeSec"] = bytes.Length.ToString();
+                        //filesizeSec = bytes.Length.ToString();
                         string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
                         SecondaryUploadedImage.ImageUrl = "data:image/png;base64," + base64String;
                         SecondaryUploadedImage.Visible = true;
                         SecondaryUploadedImage.Width = 150;
                         SecondaryUploadedImage.Height = 150;
+                        StatusLabelMain.Visible = false;
                     }
                 }
             }
         }
-       
 
         protected void btnDeleteMain_Click(object sender, EventArgs e)
         {
+            photoFolderMain = (string)ViewState["PhotoFolderMain"];
+            photoFolderSec = (string)ViewState["PhotoFolderSec"];
+            uniqueFileNameMain = (string)ViewState["uniqueFileNameMain"];
+            uniqueFileNameSec = (string)ViewState["uniqueFileNameSec"];
+            extensionMain = (string)ViewState["extensionMain"];
+            extensionSec = (string)ViewState["extensionSec"];
+            string fileToDeleteMain = Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain);
+            string fileToDeleteSec = Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec);
+            File.Delete(fileToDeleteMain);
+            File.Delete(fileToDeleteSec);
+            MainUploadedImage.ImageUrl = null;
+            MainUploadedImage.Visible = false;
+            SecondaryUploadedImage.ImageUrl = null;
+            SecondaryUploadedImage.Visible = false;
+            StatusLabelMain.Text = "Upload status: PLease choose another file!!";
+            StatusLabelMain.CssClass = "label label-warning";
         }
-
-        //protected void btnPreviewSecondary_Click(object sender, EventArgs e)
-        //{
-        //    extensionSec = Path.GetExtension(FileUploadSec.FileName);
-        //    if (FileUploadSec.HasFile)
-        //    {
-        //        try
-        //        {
-        //            if (FileUploadSec.PostedFile.ContentType == "image/png" || FileUploadSec.PostedFile.ContentType == "text/plain")
-        //            {
-        //                if (FileUploadSec.PostedFile.ContentLength < 1000000)
-        //                {
-        //                    photoFolderSec = Path.Combine(fromRootToPhotosSecondary, randomPicIDSec);
-        //                    ViewState["StoredIdSec"] = randomPicIDSec;
-        //                    if (!Directory.Exists(photoFolderSec))
-        //                    {
-        //                        Directory.CreateDirectory(photoFolderSec);
-        //                    }
-        //                    ViewState["PhotoFolderSec"] = photoFolderSec;
-        //                    string extensionSec = Path.GetExtension(FileUploadSec.FileName);
-        //                    string uniqueFileNameSec = Path.ChangeExtension(FileUploadSec.FileName, DateTime.Now.Ticks.ToString());
-        //                    FileUploadSec.SaveAs(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-        //                    var clam = new ClamClient("localhost", 3310);
-        //                    var scanResult = clam.ScanFileOnServer(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-
-        //                    switch (scanResult.Result)
-        //                    {
-        //                        case ClamScanResults.Clean:
-        //                            StatusLabelSec.CssClass = "label label-success";
-        //                            StatusLabelSec.Text = "Upload status: File uploaded!";
-
-        //                            DisplayUploadedPhotos(photoFolderSec);
-        //                            break;
-
-        //                        case ClamScanResults.VirusDetected:
-        //                            StatusLabelSec.Text = "Upload status: Virus Found!!!!!";
-        //                            File.Delete(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-        //                            StatusLabelSec.CssClass = "label label-danger";
-        //                            break;
-
-        //                        case ClamScanResults.Error:
-        //                            StatusLabelSec.Text = scanResult.RawResult;
-        //                            File.Delete(Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec));
-        //                            StatusLabelSec.CssClass = "label label-danger";
-        //                            break;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    StatusLabelSec.Text = "Upload status: The file has to be less than 1 MB!";
-        //                    StatusLabelSec.CssClass = "label label-danger";
-        //                }
-        //            }
-        //            else
-        //            {
-        //                StatusLabelSec.Text = "Upload status: Only PNG Or BMP files are accepted!";
-        //                StatusLabelSec.CssClass = "label label-danger";
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            StatusLabelSec.Text = "Upload status: The file could not be uploaded. The following error occured: " + ex.Message;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        StatusLabelSec.Text = "Upload status: You have not chosen a picture to preview!!";
-        //        StatusLabelSec.CssClass = "label label-danger";
-        //    }
-        //}
-
-        //public void DisplayUploadedPhotos(string folder)
-        //{
-        //    string[] allPhotoFiles = Directory.GetFiles(folder);
-        //    IList<string> allPhotoPaths = new List<string>();
-
-        //    string fileName;
-
-        //    foreach (string f in allPhotoFiles)
-        //    {
-        //        fileName = Path.GetFileName(f);
-        //        allPhotoPaths.Add("images/UploadedPhotos/Secondary/" + randomPicIDSec + "/" + fileName);
-        //        PathList.Add("images/UploadedPhotos/Secondary/" + randomPicIDSec + "/" + fileName);
-        //        ViewState["PathList"] = PathList;
-        //    }
-        //    rptrUserPhotos.DataSource = allPhotoPaths;
-        //    rptrUserPhotos.DataBind();
-        //}
-
-        protected void imgUserPhoto_Command(object sender, CommandEventArgs e)
-        {
-            StringBuilder script = new StringBuilder();
-            script.Append("<script type='text/javascript'>");
-            script.Append("var viewer = new PhotoViewer(); ");
-            script.Append("viewer.setBorderWidth(0);");
-            script.Append("viewer.disableToolbar();");
-            script.Append("viewer.add('" + e.CommandArgument + "');");
-            script.Append("viewer.show(0);");
-            script.Append("</script>");
-
-            ClientScript.RegisterStartupScript(GetType(), "viewer", script.ToString());
-        }
-
-        //protected void btnDeleteSecondary_Click(object sender, EventArgs e)
-        //{
-        //    {
-        //        foreach (RepeaterItem ri in rptrUserPhotos.Items)
-        //        {
-        //            CheckBox cb = ri.FindControl("cbDelete") as CheckBox;
-        //            if (cb.Checked)
-        //            {
-        //                string fromPhotosToExtension = cb.Attributes["special"];
-        //                string fromRootToHome = @"C:\Users\User\Documents\Visual Studio 2015\Projects\ASPJ-F2\ASPJ-F2\Images\UploadedPhotos\Secondary\S";
-        //                string fileToDelete = Path.Combine(Directory.GetParent(fromRootToHome).ToString(), fromPhotosToExtension);
-        //                File.Delete(fileToDelete);
-        //            }
-        //        }
-        //        DisplayUploadedPhotos(Path.Combine(fromRootToPhotosSecondary, randomPicIDSec));
-        //    }
-        //}
 
         protected void ShareBtn_Click(object sender, EventArgs e)
         {
+            photoFolderMain = (string)ViewState["PhotoFolderMain"];
+            photoFolderSec = (string)ViewState["PhotoFolderSec"];
+
+            uniqueFileNameMain = (string)ViewState["uniqueFileNameMain"];
+            uniqueFileNameSec = (string)ViewState["uniqueFileNameSec"];
+
+            extensionMain = (string)ViewState["extensionMain"];
+            extensionSec = (string)ViewState["extensionSec"];
+
+            filesizeMain = (string)ViewState["filesizeMain"];
+            filesizeSec = (string)ViewState["filesizeSec"];
+
+            medianameMain = (string)ViewState["medianameMain"];
+
+            secretTextKeyMain=(string) ViewState["secretTextKeyMain"];
+            secretTextKeySec = (string)ViewState["secretTextKeySec"];
+
+            encrytedSecretTextMain=(string) ViewState["encrytedSecretTextMain"] ;
+            encrytedSecretTextSec = (string)ViewState["encrytedSecretTextSec"];
+
+            string pathToCheckMain = Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain);
+            string pathToCheckSec = Path.Combine(photoFolderSec, uniqueFileNameMain + extensionSec);
+
+            if (File.Exists(pathToCheckMain))
+            {
+                using (SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["F2DatabaseConnectionString"].ConnectionString))
+                {
+                    SqlDataReader reader;
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.CommandText = "INSERT INTO [dbo].[FileUpload] ([FileType],[FilePath],[FileSize],[MediaName],[UserID]) VALUES (@FileType,@FilePath,@FileSize,@MediaName,@UserID);";
+                    cmd.Parameters.Add("@FileType", SqlDbType.VarChar).Value = extensionMain;
+                    cmd.Parameters.Add("@FilePath", SqlDbType.VarChar).Value = Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain);
+                    cmd.Parameters.Add("@FileSize", SqlDbType.VarChar).Value = filesizeMain;
+                    cmd.Parameters.Add("@MediaName", SqlDbType.VarChar).Value = medianameMain;
+                    cmd.Parameters.Add("@UserID", SqlDbType.VarChar).Value = userid;
+                    cmd.Connection = connection;
+                    connection.Open();
+                    cmd.ExecuteNonQuery();
+                    connection.Close();
+
+                    SqlCommand cmd2 = new SqlCommand();
+                    cmd2.CommandText = "INSERT INTO [dbo].[FileUploadSecret] ([EmbeddedSecretText],[EmbeddedSecretTextKey]) VALUES (@EmbeddedSecretText,@EmbeddedSecretTextKey);";
+                    cmd2.Parameters.Add("@EmbeddedSecretText", SqlDbType.VarChar).Value = encrytedSecretTextMain;
+                    cmd2.Parameters.Add("@EmbeddedSecretTextKey", SqlDbType.VarChar).Value = secretTextKeyMain;
+                    cmd2.Connection = connection;
+                    connection.Open();
+                    cmd2.ExecuteNonQuery();
+                    connection.Close();
+
+                    SqlCommand cmd3 = new SqlCommand();
+                    cmd3.CommandText = "INSERT INTO [dbo].[FileUploadSecondary] ([FileType],[FilePath],[FileSize],[UserID]) VALUES (@FileType,@FilePath,@FileSize,@UserID);";
+                    cmd3.Parameters.Add("@FileType", SqlDbType.VarChar).Value = extensionSec;
+                    cmd3.Parameters.Add("@FilePath", SqlDbType.VarChar).Value = Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec);
+                    cmd3.Parameters.Add("@FileSize", SqlDbType.VarChar).Value = filesizeSec;
+                    cmd3.Parameters.Add("@UserID", SqlDbType.VarChar).Value = userid;
+                    cmd3.Connection = connection;
+                    connection.Open();
+                    cmd3.ExecuteNonQuery();
+                    connection.Close();
+
+                    SqlCommand cmd4 = new SqlCommand();
+                    cmd4.CommandText = "INSERT INTO [dbo].[FileUploadSecondarySecret] ([EmbeddedSecretText],[EmbeddedSecretTextKey]) VALUES (@EmbeddedSecretText,@EmbeddedSecretTextKey);";
+                    cmd4.Parameters.Add("@EmbeddedSecretText", SqlDbType.VarChar).Value = encrytedSecretTextSec;
+                    cmd4.Parameters.Add("@EmbeddedSecretTextKey", SqlDbType.VarChar).Value = secretTextKeySec;
+                    cmd4.Connection = connection;
+                    connection.Open();
+                    cmd4.ExecuteNonQuery();
+                    connection.Close();
+
+                    SqlCommand cmd5 = new SqlCommand();
+                    cmd5.CommandText = "SELECT [FileUploadSecretID] FROM [dbo].[FileUploadSecret] WHERE [EmbeddedSecretText] = @EmbeddedSecretText ;";
+                    cmd5.Parameters.Add("@EmbeddedSecretText", SqlDbType.VarChar).Value = encrytedSecretTextMain;
+                    cmd5.Connection = connection;
+                    connection.Open();
+                    cmd5.ExecuteNonQuery();
+
+                    reader = cmd5.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        fileUploadSecretID = reader.GetInt32(0);
+                    }
+                    connection.Close();
+
+                    SqlCommand cmd6 = new SqlCommand();
+                    cmd6.CommandText = "SELECT [FileUploadSecondarySecretID] FROM [dbo].[FileUploadSecondarySecret] WHERE [EmbeddedSecretText] = @EmbeddedSecretText ;";
+                    cmd6.Parameters.Add("@EmbeddedSecretText", SqlDbType.VarChar).Value = encrytedSecretTextSec;
+                    cmd6.Connection = connection;
+                    connection.Open();
+                    cmd6.ExecuteNonQuery();
+
+                    reader = cmd6.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        fileUploadSecondarySecretID = reader.GetInt32(0);
+                    }
+                    connection.Close();
+
+                    SqlCommand cmd7 = new SqlCommand();
+                    cmd7.CommandText = "SELECT [FileUploadID] FROM [dbo].[FileUpload] WHERE [FilePath] = @FilePath ;";
+                    cmd7.Parameters.Add("@FilePath", SqlDbType.VarChar).Value = Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain);
+                    cmd7.Connection = connection;
+                    connection.Open();
+                    cmd7.ExecuteNonQuery();
+
+                    reader = cmd7.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        fileUploadID = reader.GetInt32(0);
+                    }
+                    connection.Close();
+
+                    SqlCommand cmd8 = new SqlCommand();
+                    cmd8.CommandText = "SELECT [FileUploadSecondaryID] FROM [dbo].[FileUploadSecondary] WHERE [FilePath] = @FilePath ;";
+                    cmd8.Parameters.Add("@FilePath", SqlDbType.VarChar).Value = Path.Combine(photoFolderSec, uniqueFileNameSec + extensionSec);
+                    cmd8.Connection = connection;
+                    connection.Open();
+                    cmd8.ExecuteNonQuery();
+
+                    reader = cmd8.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        fileUploadSecondaryID = reader.GetInt32(0);
+                    }
+                    connection.Close();
+
+                    SqlCommand cmd9 = new SqlCommand();
+                    cmd9.CommandText = "UPDATE [dbo].[FileUpload] SET [FileUploadSecretID]= @FileUploadSecretID WHERE [FileUploadID] = @FileUploadID";
+                    cmd9.Parameters.Add("@FileUploadSecretID", SqlDbType.Int).Value = fileUploadSecretID;
+                    cmd9.Parameters.AddWithValue("FileUploadID", fileUploadID);
+                    cmd9.Connection = connection;
+                    connection.Open();
+                    cmd9.ExecuteNonQuery();
+                    connection.Close();
+
+                    SqlCommand cmd10 = new SqlCommand();
+                    cmd10.CommandText = "UPDATE [dbo].[FileUploadSecondary] SET [FileUploadSecondarySecretID]= @FileUploadSecondarySecretID WHERE [FileUploadSecondaryID] = @FileUploadSecondaryID";
+                    cmd10.Parameters.Add("@FileUploadSecondarySecretID", SqlDbType.Int).Value = fileUploadSecondarySecretID;
+                    cmd10.Parameters.AddWithValue("FileUploadSecondaryID", fileUploadSecondaryID);
+                    cmd10.Connection = connection;
+                    connection.Open();
+                    cmd10.ExecuteNonQuery();
+                    connection.Close();
+
+                    SqlCommand cmd11 = new SqlCommand();
+                    cmd11.CommandText = "UPDATE [dbo].[Gallery] SET [FileUploadID] = @FileUploadID ,[FileUploadSecondaryID] = @FileUploadSecondaryID WHERE [GalleryID] = @GalleryID;";
+                    cmd11.Parameters.Add("@FileUploadID", SqlDbType.Int).Value = fileUploadID;
+                    cmd11.Parameters.Add("@FileUploadSecondaryID", SqlDbType.Int).Value = fileUploadSecondaryID;
+                    cmd11.Parameters.AddWithValue("GalleryID", galleryID);
+                    cmd11.Connection = connection;
+                    connection.Open();
+                    cmd11.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            else
+            {
+                StatusLabelMain.Text = "Unable to Share!!! You did not upload any photos ";
+                StatusLabelMain.CssClass = "label label-danger";
+            }
+        }
+
+        //Encryption for the secret text for image
+        public static string EncryptStringAesIntoImage(string plainText, string sharedSecret)
+        {
+            if (string.IsNullOrEmpty(plainText))
+                throw new ArgumentNullException("plainText");
+            if (string.IsNullOrEmpty(sharedSecret))
+                throw new ArgumentNullException("sharedSecret");
+
+            string outStr = null;                       // Encrypted string to return
+            RijndaelManaged aesAlg = null;              // RijndaelManaged object used to encrypt the data.
+
+            try
+            {
+                // generate the key from the shared secret and the salt
+                Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+
+                // Create a RijndaelManaged object
+                aesAlg = new RijndaelManaged();
+                aesAlg.Key = key.GetBytes(aesAlg.KeySize / 8);
+
+                // Create a decryptor to perform the stream transform.
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                // Create the streams used for encryption.
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    // prepend the IV
+                    msEncrypt.Write(BitConverter.GetBytes(aesAlg.IV.Length), 0, sizeof(int));
+                    msEncrypt.Write(aesAlg.IV, 0, aesAlg.IV.Length);
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            //Write all data to the stream.
+                            swEncrypt.Write(plainText);
+                        }
+                    }
+                    outStr = Convert.ToBase64String(msEncrypt.ToArray());
+                }
+            }
+            finally
+            {
+                // Clear the RijndaelManaged object.
+                if (aesAlg != null)
+                    aesAlg.Clear();
+            }
+
+            // Return the encrypted bytes from the memory stream.
+            return outStr;
         }
     }
 }
