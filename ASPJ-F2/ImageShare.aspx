@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ImageShare.aspx.cs" Inherits="ASPJ_F2.ImageShare" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <script src="http://slideshow.triptracker.net/slide.js" type="text/javascript"></script>
+
     <div class="container">
         <div class="panel-body">
             <div class="col-lg-12">
@@ -99,7 +99,8 @@
                 </div>
             </div>
         </div>
-        <%--<fieldset>
+    </div>
+    <%--<fieldset>
         <legend>Share/Sell Your Designs</legend>
         <div class="form-group">
             <label for="inputTitle">Design Title</label>
