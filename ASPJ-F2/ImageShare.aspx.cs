@@ -266,8 +266,6 @@ namespace ASPJ_F2
 
         public void DisplayMainUploadedPhotos(byte[] img)
         {
-            //Stream fs = FileUploadMain.PostedFile.InputStream;
-            //BinaryReader br = new BinaryReader(fs);
             Byte[] bytes = img;
             string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
             MainUploadedImage.ImageUrl = "data:image/png;base64," + base64String;
@@ -381,10 +379,10 @@ namespace ASPJ_F2
 
             medianameMain = (string)ViewState["medianameMain"];
 
-            secretTextKeyMain=(string) ViewState["secretTextKeyMain"];
+            secretTextKeyMain = (string)ViewState["secretTextKeyMain"];
             secretTextKeySec = (string)ViewState["secretTextKeySec"];
 
-            encrytedSecretTextMain=(string) ViewState["encrytedSecretTextMain"] ;
+            encrytedSecretTextMain = (string)ViewState["encrytedSecretTextMain"];
             encrytedSecretTextSec = (string)ViewState["encrytedSecretTextSec"];
 
             string pathToCheckMain = Path.Combine(photoFolderMain, uniqueFileNameMain + extensionMain);

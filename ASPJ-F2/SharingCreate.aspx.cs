@@ -14,7 +14,6 @@ namespace ASPJ_F2
         private string title;
         private string desc;
         private string category;
-        private string tag;
         private int cost;
         //temp
         private int userid = 123;

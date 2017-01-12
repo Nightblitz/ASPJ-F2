@@ -189,6 +189,7 @@
     <Content Include="Account\Web.config" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="ImageShare.aspx" />
+    <Content Include="MyUploads.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -380,6 +381,13 @@
       <DependentUpon>ImageShare.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="MyUploads.aspx.cs">
+      <DependentUpon>MyUploads.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MyUploads.aspx.designer.cs">
+      <DependentUpon>MyUploads.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharingCreate.aspx.cs">
       <DependentUpon>SharingCreate.aspx</DependentUpon>

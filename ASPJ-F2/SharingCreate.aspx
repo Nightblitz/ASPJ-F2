@@ -32,15 +32,9 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="inputTags">Tags</label>
-            <asp:TextBox ID="TagsTextBox" MaxLength="15" class="form-control" placeholder="Sweet" runat="server"></asp:TextBox>
-            <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="TagsTextBox"
-                ForeColor="Red" ErrorMessage="**Please Enter at least one Tag"></asp:RequiredFieldValidator>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="padding-left:0px;">
                 <div class="input-group">
-                    <div class="input-group-addon">$</div>
+                    <div class="input-group-addon">Earn$</div>
                      <asp:TextBox ID="CostTextBox" MaxLength="15" class="form-control" placeholder="Amount" runat="server"></asp:TextBox>
                     <div class="input-group-addon">.00</div>
                 </div>
