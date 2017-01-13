@@ -337,7 +337,7 @@ namespace ASPJ_F2
                         SecondaryUploadedImage.Visible = true;
                         SecondaryUploadedImage.Width = 150;
                         SecondaryUploadedImage.Height = 150;
-                        StatusLabelMain.Visible = false;
+                        StatusLabelMain.Visible = true;
                     }
                 }
             }
@@ -524,6 +524,7 @@ namespace ASPJ_F2
                 StatusLabelMain.Text = "Unable to Share!!! You did not upload any photos ";
                 StatusLabelMain.CssClass = "label label-danger";
             }
+            Response.Redirect("MyUploads.aspx");
         }
 
         //Encryption for the secret text for image
