@@ -331,7 +331,6 @@ namespace ASPJ_F2
                         //Displaying of image
                         Byte[] bytes = memoryStream.ToArray();
                         ViewState["filesizeSec"] = bytes.Length.ToString();
-                        //filesizeSec = bytes.Length.ToString();
                         string base64String = Convert.ToBase64String(bytes, 0, bytes.Length);
                         SecondaryUploadedImage.ImageUrl = "data:image/png;base64," + base64String;
                         SecondaryUploadedImage.Visible = true;

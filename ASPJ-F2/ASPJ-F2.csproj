@@ -188,6 +188,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Account\Web.config" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="GalleryView.aspx" />
     <Content Include="ImageShare.aspx" />
     <Content Include="MyUploads.aspx" />
     <Content Include="Scripts\bootstrap.js" />
@@ -369,6 +370,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GalleryView.aspx.cs">
+      <DependentUpon>GalleryView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GalleryView.aspx.designer.cs">
+      <DependentUpon>GalleryView.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
