@@ -18,7 +18,7 @@
 
                 <!-- Preview Image -->
                 <%--<img class="img-responsive" src="http://placehold.it/900x300" alt="">--%>
-                <asp:Image ID="SecImage" class="img-responsive" runat="server" />
+                <asp:Image ID="SecImage"  class="img-responsive"  runat="server" />
                 <hr>
 
                 <!-- Post Content -->
