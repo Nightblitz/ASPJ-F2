@@ -1,4 +1,4 @@
-﻿mm<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Notification.aspx.cs" Inherits="ASPJ_F2.Notification" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Notification.aspx.cs" Inherits="ASPJ_F2.Notification" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <asp:Label ID="Label3" runat="server" Text="jc  page"></asp:Label>
     <asp:Button ID="LikeB" runat="server" Text="Like" OnClick="LikeB_Click" />
