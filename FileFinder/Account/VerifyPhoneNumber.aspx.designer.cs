@@ -7,36 +7,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASPJ_F2 {
+namespace FileFinder.Account {
     
     
-    public partial class GalleryView {
+    public partial class VerifyPhoneNumber {
         
         /// <summary>
-        /// DesignTitleLabel control.
+        /// ErrorMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label DesignTitleLabel;
+        protected global::System.Web.UI.WebControls.Literal ErrorMessage;
         
         /// <summary>
-        /// NameLabel control.
+        /// PhoneNumber control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label NameLabel;
+        protected global::System.Web.UI.WebControls.HiddenField PhoneNumber;
         
         /// <summary>
-        /// SecImage control.
+        /// Code control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image SecImage;
+        protected global::System.Web.UI.WebControls.TextBox Code;
     }
 }

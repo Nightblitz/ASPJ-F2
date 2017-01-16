@@ -7,36 +7,45 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ASPJ_F2 {
+namespace FileFinder.Account {
     
     
-    public partial class GalleryView {
+    public partial class Manage {
         
         /// <summary>
-        /// DesignTitleLabel control.
+        /// successMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label DesignTitleLabel;
+        protected global::System.Web.UI.WebControls.PlaceHolder successMessage;
         
         /// <summary>
-        /// NameLabel control.
+        /// ChangePassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label NameLabel;
+        protected global::System.Web.UI.WebControls.HyperLink ChangePassword;
         
         /// <summary>
-        /// SecImage control.
+        /// CreatePassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image SecImage;
+        protected global::System.Web.UI.WebControls.HyperLink CreatePassword;
+        
+        /// <summary>
+        /// PhoneNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label PhoneNumber;
     }
 }
