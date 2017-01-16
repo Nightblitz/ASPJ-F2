@@ -4,8 +4,6 @@ using System.Web;
 using System.Web.UI;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Owin;
-using ASPJ_F2.Models;
 
 namespace ASPJ_F2.Account
 {
@@ -24,7 +22,7 @@ namespace ASPJ_F2.Account
             {
                 var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-                var user = manager.FindByName(Email.Text);
+                var user = manager.FindByEmail(Email.Text);
                 if (user == null)
                 {
                     ErrorMessage.Text = "No user found";

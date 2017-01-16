@@ -11,7 +11,7 @@ namespace ASPJ_F2.Account {
     
     
     public partial class ResetPasswordConfirmation {
-
+        
         /// <summary>
         /// login control.
         /// </summary>
@@ -19,6 +19,6 @@ namespace ASPJ_F2.Account {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink login;    
+        protected global::System.Web.UI.WebControls.HyperLink login;
     }
 }

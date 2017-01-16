@@ -112,38 +112,6 @@
                     </div>
                     <!-- /.input-group -->
                 </div>
-
-                <!-- Blog Categories Well -->
-                <%--<div class="well">
-                    <h4>Item Categories</h4>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <ul class="list-unstyled">
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-6">
-                            <ul class="list-unstyled">
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- /.row -->
-                </div>--%>
                 <div class="form-group">
                     <div class="panel panel-info">
                         <div class="panel-heading">
@@ -164,16 +132,12 @@
 
                 <!-- Side Widget Well -->
                 <div class="well">
-                    <div class="form-horizontal">
-                    <div class="form-group">
-                        <label for="input1" class="col-sm-6 control-label">Avaliable For Purchase</label>
-                        <div class="col-sm-6">
-                    <asp:Label ID="Label3" runat="server" Text="Price=S$10.00"></asp:Label>
-                    </div>    
+                    <div class="form-group" style="text-align:center">
+                        <label for="input1">Avaliable For Purchase</label>    
                         </div>
                     <asp:Button ID="AddToCartBtn" class="btn btn-primary btn-block" runat="server" Text="Add To cart" OnClick="Download_PurcahseBtn_Click" />
                 </div>
-                    </div>
+                    
             </div>
         </div>
     </div>
