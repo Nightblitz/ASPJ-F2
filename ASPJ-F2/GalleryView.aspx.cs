@@ -255,5 +255,10 @@ namespace ASPJ_F2
             System.Drawing.Image returnImage = System.Drawing.Image.FromStream(ms);
             return returnImage;
         }
+
+        protected void Download_PurcahseBtn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
