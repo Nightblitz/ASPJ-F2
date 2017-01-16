@@ -175,6 +175,7 @@ namespace ASPJ_F2
                         byte[] byteImageSec = ms.ToArray();
                         string base64StringImageSec = Convert.ToBase64String(byteImageSec);
                         SecImage.ImageUrl = "data:image/png;base64," + base64StringImageSec;
+                        //SecImage.Style["background:url"] = "data:image/png;base64," + base64StringImageSec;
                     }
                 }
             }
@@ -253,6 +254,11 @@ namespace ASPJ_F2
             MemoryStream ms = new MemoryStream(byteArrayIn);
             System.Drawing.Image returnImage = System.Drawing.Image.FromStream(ms);
             return returnImage;
+        }
+
+        protected void Download_PurcahseBtn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

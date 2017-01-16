@@ -17,7 +17,7 @@
     <AssemblyName>ASPJ-F2</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44330</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -52,11 +52,36 @@
       <HintPath>..\packages\nClam.2.0.6.0\lib\net40-Client\nClam.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Recaptcha, Version=1.0.5.0, Culture=neutral, PublicKeyToken=9afc4d65b28c38c2, processorArchitecture=MSIL">
+      <HintPath>..\packages\recaptcha.1.0.5.0\lib\.NetFramework 4.0\Recaptcha.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SendGrid, Version=6.3.4.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sendgrid.6.3.4\lib\SendGrid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SendGrid.SmtpApi, Version=1.3.1.0, Culture=neutral, PublicKeyToken=2ae73662c35d80e4, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGrid.SmtpApi.1.3.1\lib\net40\SendGrid.SmtpApi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SendGridMail, Version=6.3.4.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sendgrid.6.3.4\lib\SendGridMail.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -94,10 +119,6 @@
     <Reference Include="Antlr3.Runtime">
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <Private>True</Private>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms">
       <Private>True</Private>
@@ -161,7 +182,9 @@
     <Content Include="About.aspx" />
     <Content Include="Account\AddPhoneNumber.aspx" />
     <Content Include="Account\Confirm.aspx" />
+    <Content Include="Account\EmailConfirmation.aspx" />
     <Content Include="Account\Forgot.aspx" />
+    <Content Include="Account\ImageAuthentication.aspx" />
     <Content Include="Account\Lockout.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Manage.aspx" />
@@ -170,6 +193,7 @@
     <Content Include="Account\OpenAuthProviders.ascx" />
     <Content Include="Account\Register.aspx" />
     <Content Include="Account\RegisterExternalLogin.aspx" />
+    <Content Include="Account\RegisterProfilePicture.aspx" />
     <Content Include="Account\ResetPassword.aspx" />
     <Content Include="Account\ResetPasswordConfirmation.aspx" />
     <Content Include="Account\TwoFactorAuthenticationSignIn.aspx" />
@@ -177,6 +201,10 @@
     <Content Include="App_Data\F2Database.mdf" />
     <Content Include="App_Data\F2Database_log.ldf">
       <DependentUpon>F2Database.mdf</DependentUpon>
+    </Content>
+    <Content Include="App_Data\Notification.mdf" />
+    <Content Include="App_Data\Notification_log.ldf">
+      <DependentUpon>Notification.mdf</DependentUpon>
     </Content>
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-original.css" />
@@ -190,7 +218,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Account\Web.config" />
+    <Content Include="Account\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="GalleryView.aspx" />
     <Content Include="Scripts\HomePageJS\bootstrap.js" />
@@ -198,7 +228,40 @@
     <Content Include="Scripts\HomePageJS\jquery.js" />
     <Content Include="ImageShare.aspx" />
     <Content Include="Images\UploadedPhotos\Secondary\SearchIcon.png" />
+    <Content Include="Image_Authentication\audi.jpg" />
+    <Content Include="Image_Authentication\basketball.jpg" />
+    <Content Include="Image_Authentication\cat.jpg" />
+    <Content Include="Image_Authentication\dog.jpg" />
+    <Content Include="Image_Authentication\eiffeltower.jpg" />
+    <Content Include="Image_Authentication\flower.jpg" />
+    <Content Include="Image_Authentication\football.jpg" />
+    <Content Include="Image_Authentication\giraffe.jpg" />
+    <Content Include="Image_Authentication\leopard.jpg" />
+    <Content Include="Image_Authentication\lion.jpg" />
+    <Content Include="Image_Authentication\palmisland.jpg" />
+    <Content Include="Image_Authentication\polarbear.jpeg" />
+    <Content Include="Image_Authentication\sunflower.jpg" />
+    <Content Include="Image_Authentication\Thumb\audi.jpg" />
+    <Content Include="Image_Authentication\Thumb\basketball.png" />
+    <Content Include="Image_Authentication\Thumb\cat.jpg" />
+    <Content Include="Image_Authentication\Thumb\dog.jpg" />
+    <Content Include="Image_Authentication\Thumb\eiffeltower.jpg" />
+    <Content Include="Image_Authentication\Thumb\flower.jpg" />
+    <Content Include="Image_Authentication\Thumb\football.jpg" />
+    <Content Include="Image_Authentication\Thumb\giraffe.jpg" />
+    <Content Include="Image_Authentication\Thumb\leopard.jpg" />
+    <Content Include="Image_Authentication\Thumb\lion.jpg" />
+    <Content Include="Image_Authentication\Thumb\palmisland.jpg" />
+    <Content Include="Image_Authentication\Thumb\polarbear.jpg" />
+    <Content Include="Image_Authentication\Thumb\sunflower.jpg" />
+    <Content Include="Image_Authentication\Thumb\waterfall.jpg" />
+    <Content Include="Image_Authentication\Thumb\whitehouse.jpg" />
+    <Content Include="Image_Authentication\waterfall.jpg" />
+    <Content Include="Image_Authentication\whitehouse.jpg" />
+    <Content Include="Image_ProfilePicture\defaultprofilepicture.jpg" />
+    <Content Include="Image_ProfilePicture\Thumb\defaultprofilepicture.jpg" />
     <Content Include="MyUploads.aspx" />
+    <Content Include="Notification.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -233,8 +296,11 @@
     <Content Include="Global.asax" />
     <Content Include="SharingCreate.aspx" />
     <Content Include="Site.Master" />
+    <Content Include="TestHome%28YS%29.aspx" />
     <Content Include="ViewSwitcher.ascx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Bundle.config" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
@@ -262,12 +328,26 @@
     <Compile Include="Account\Confirm.aspx.designer.cs">
       <DependentUpon>Confirm.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Account\EmailConfirmation.aspx.cs">
+      <DependentUpon>EmailConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\EmailConfirmation.aspx.designer.cs">
+      <DependentUpon>EmailConfirmation.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Account\Forgot.aspx.cs">
       <DependentUpon>Forgot.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\Forgot.aspx.designer.cs">
       <DependentUpon>Forgot.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\ImageAuthentication.aspx.cs">
+      <DependentUpon>ImageAuthentication.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\ImageAuthentication.aspx.designer.cs">
+      <DependentUpon>ImageAuthentication.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\Lockout.aspx.cs">
       <DependentUpon>Lockout.aspx</DependentUpon>
@@ -324,6 +404,13 @@
     </Compile>
     <Compile Include="Account\RegisterExternalLogin.aspx.designer.cs">
       <DependentUpon>RegisterExternalLogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\RegisterProfilePicture.aspx.cs">
+      <DependentUpon>RegisterProfilePicture.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\RegisterProfilePicture.aspx.designer.cs">
+      <DependentUpon>RegisterProfilePicture.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\ResetPassword.aspx.cs">
       <DependentUpon>ResetPassword.aspx</DependentUpon>
@@ -396,6 +483,15 @@
     <Compile Include="ImageShare.aspx.designer.cs">
       <DependentUpon>ImageShare.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701130749533_InitialCreate.cs" />
+    <Compile Include="Migrations\201701130749533_InitialCreate.Designer.cs">
+      <DependentUpon>201701130749533_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701160944419_1.cs" />
+    <Compile Include="Migrations\201701160944419_1.Designer.cs">
+      <DependentUpon>201701160944419_1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="MyUploads.aspx.cs">
       <DependentUpon>MyUploads.aspx</DependentUpon>
@@ -404,7 +500,15 @@
     <Compile Include="MyUploads.aspx.designer.cs">
       <DependentUpon>MyUploads.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Notification.aspx.cs">
+      <DependentUpon>Notification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Notification.aspx.designer.cs">
+      <DependentUpon>Notification.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="session.cs" />
     <Compile Include="SharingCreate.aspx.cs">
       <DependentUpon>SharingCreate.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -427,6 +531,13 @@
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="TestHome%28YS%29.aspx.cs">
+      <DependentUpon>TestHome%28YS%29.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TestHome%28YS%29.aspx.designer.cs">
+      <DependentUpon>TestHome%28YS%29.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -437,6 +548,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images\UploadedPhotos\Main\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201701130749533_InitialCreate.resx">
+      <DependentUpon>201701130749533_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701160944419_1.resx">
+      <DependentUpon>201701160944419_1.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
