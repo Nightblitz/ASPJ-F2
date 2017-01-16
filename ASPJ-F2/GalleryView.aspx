@@ -6,28 +6,42 @@
         <div class="row">
             <div class="col-lg-8">
                 <!-- Title -->
-                <asp:Label ID="DesignTitleLabel" Font-Size="Larger" runat="server"></asp:Label>
+                <asp:Label ID="DesignTitleLabel" Font-Size="XX-Large" runat="server"></asp:Label>
 
                 <!-- Author -->
                 <h3>
-                    Designed by <asp:Label ID="NameLabel" runat="server"></asp:Label>
+                    Designed by <asp:Label ID="NameLabel" Font-Size="Larger" runat="server"></asp:Label>
                 </h3>
-
                 <hr>
-                <hr>
-
                 <!-- Preview Image -->
-                <%--<img class="img-responsive" src="http://placehold.it/900x300" alt="">--%>
-                <asp:Image ID="SecImage"  class="img-responsive"  runat="server" />
-                <hr>
-
-                <!-- Post Content -->
-                <asp:Label ID="Label1" runat="server" class="lead" Text="Label"></asp:Label>
+                 <div class="well">
+                     <asp:Image ID="SecImage" Height="300px" Width="400" runat="server" />
+                    <div class="caption-full">
+                        <h4 class="pull-right">$24.99</h4>
+                        <h4><a href="#">Product Name</a>
+                        </h4>
+                        <p>See more snippets like these online store reviews at <a target="_blank" href="http://bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
+                        <p>Want to make these reviews work? Check out
+                            <strong><a href="http://maxoffsky.com/code-blog/laravel-shop-tutorial-1-building-a-review-system/">this building a review system tutorial</a>
+                            </strong>over at maxoffsky.com!</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
+                    </div>
+                    <div class="ratings">
+                        <p>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                            4.0 stars
+                        </p>
+                    </div>
+                </div>
                 
                 <hr>
                 <!-- Comments Form -->
                 <div class="well">
-                    <h4>Leave a Comment:</h4>
+                    <h4>Leave a Review:</h4>
                     
                         <div class="form-group">
                             <textarea class="form-control" rows="3"></textarea>
@@ -79,7 +93,66 @@
                     </div>
                 </div>
             </div>
+        
+
+    <!-- Blog Sidebar Widgets Column -->
+            <div class="col-md-4">
+
+                <!-- Blog Search Well -->
+                <div class="well">
+                    <h4>Item Search</h4>
+                    <div class="input-group">
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        </span>
+                    </div>
+                    <!-- /.input-group -->
+                </div>
+
+                <!-- Blog Categories Well -->
+                <div class="well">
+                    <h4>Item Categories</h4>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                                <li><a href="#">Category Name</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+
+                <!-- Side Widget Well -->
+                <div class="well">
+                    <h4>Side Widget Well</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                </div>
+
+            </div>
+            </div>
         </div>
-    </div>
+        
     
 </asp:Content>
