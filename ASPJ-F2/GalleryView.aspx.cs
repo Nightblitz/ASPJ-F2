@@ -175,6 +175,7 @@ namespace ASPJ_F2
                         byte[] byteImageSec = ms.ToArray();
                         string base64StringImageSec = Convert.ToBase64String(byteImageSec);
                         SecImage.ImageUrl = "data:image/png;base64," + base64StringImageSec;
+                        //SecImage.Style["background:url"] = "data:image/png;base64," + base64StringImageSec;
                     }
                 }
             }
